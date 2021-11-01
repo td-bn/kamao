@@ -7,5 +7,5 @@ interface IAave {
     /**
      * Deposit the contract balance into Aave 
      */
-    function deposit() external returns (bool);
+    function depositETH(address _onBehalfOf) external payable returns (bool);
 }
