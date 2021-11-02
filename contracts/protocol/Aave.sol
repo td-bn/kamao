@@ -11,11 +11,10 @@ contract Aave is IAave {
     address public aWETH = 0x030bA81f1c18d280636F32af80b9AAd02Cf0854e;
     address public aaveLendingPool;
 
-    event Balance(address, uint256);
-
     /**
      * @notice : Gets the lending pool contract address from Aave's lending pool address provider
      */
+    // TODO Make this internal and call from constructor, or initialize()
     function getLendingPool() external returns (address) {
         ILendingPoolAddressesProvider provider = ILendingPoolAddressesProvider(lendingPoolProvider);
         aaveLendingPool = provider.getLendingPool();
