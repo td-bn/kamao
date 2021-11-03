@@ -8,12 +8,12 @@ const AddressZero = ethers.constants.AddressZero;
 const wETHGatewayAddress = "0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04";
 const aWETHAddress = "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e";
 
-describe("Aave", function () {
+describe("AaveConnector", function () {
   let instance: any;
   let user: Signer;
 
   before(async () => {
-    const Aave = await ethers.getContractFactory("Aave");
+    const Aave = await ethers.getContractFactory("AaveConnector");
     instance = await Aave.deploy();
     await instance.deployed();
 
@@ -28,7 +28,7 @@ describe("Aave", function () {
 
   describe("lendingPoolAddressProvider", () => {
     it("should fetch correct lending pool address", async () => {
-      const address = await instance.connect(user).getLendingPool();
+      const address = await instance.aaveLendingPool();
       expect(address).not.to.equal(AddressZero);
     });
   });
@@ -37,18 +37,17 @@ describe("Aave", function () {
     let userAddress: any;
     before(async () => {
       userAddress = await user.getAddress();
-      await instance.connect(user).getLendingPool();
     });
 
     it("should deposit ETH into the AAVE protocol", async () => {
       const success = await instance
         .connect(user)
-        .depositETH(userAddress, { value: parseEther("1") });
+        .depositETH(userAddress, { value: parseEther("10") });
       expect(success);
     });
 
     it("aWETH balance of owner should be greater than 0", async () => {
-      const balance = await instance.connect(user).getETHBalance(userAddress);
+      const balance = await instance.getaWETHBalance(userAddress);
       expect(balance.gt(AddressZero));
     });
   });
@@ -77,17 +76,15 @@ describe("Aave", function () {
       const balanceInitial = await aTokenContract.balanceOf(userAddress);
       await aTokenContract
         .connect(user)
-        .approve(wETHGatewayAddress, parseEther("100"));
+        .approve(wETHGatewayAddress, parseEther("1"));
       await aTokenContract
         .connect(user)
         .allowance(userAddress, wETHGatewayAddress);
 
       await wethGateway
         .connect(user)
-        .withdrawETH(lendingPoolAddress, parseEther("100"), userAddress);
-      const balanceNow = await instance
-        .connect(user)
-        .getETHBalance(userAddress);
+        .withdrawETH(lendingPoolAddress, parseEther("1"), userAddress);
+      const balanceNow = await aTokenContract.balanceOf(userAddress);
       expect(balanceNow.lt(balanceInitial));
     });
   });

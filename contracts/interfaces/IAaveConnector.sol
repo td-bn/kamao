@@ -2,10 +2,7 @@
 
 pragma solidity ^0.8.0;
 
-interface IAave {
-
-    /**
-     * Deposit the contract balance into Aave 
-     */
+interface IAaveConnector {
     function depositETH(address _onBehalfOf) external payable returns (bool);
+    function getaWETHBalance(address _user) external view returns (uint256);
 }
