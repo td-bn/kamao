@@ -16,6 +16,10 @@ contract AaveConnector is IAaveConnector {
         aaveLendingPool = provider.getLendingPool();
     }
 
+    function getAaveLendingPool() external view override returns (address) {
+        return aaveLendingPool;
+    }
+
     function depositETH(address _onBehalfOf) external payable override returns (bool) {
         bytes memory callData = abi.encodeWithSignature(
             "depositETH(address,address,uint16)",

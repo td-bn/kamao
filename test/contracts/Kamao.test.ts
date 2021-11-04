@@ -1,13 +1,17 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Signer, BigNumber } from "ethers";
+// import { legos } from "@studydefi/money-legos";
 
 const ONE_ETH = ethers.constants.WeiPerEther;
+// // const wETHGatewayAddress = "0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04";
+// const aWETHAddress = "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e";
 
 describe("Kamao", function () {
   let instance: any;
   let user: Signer;
   let aaveConnector: any;
+  let contractAddress: any;
 
   before(async () => {
     const Kamao = await ethers.getContractFactory("Kamao");
@@ -17,6 +21,7 @@ describe("Kamao", function () {
     await instance.deployed();
 
     [user] = await ethers.getSigners();
+    contractAddress = instance.address;
   });
 
   describe("deployement", () => {
@@ -36,11 +41,6 @@ describe("Kamao", function () {
   });
 
   describe("Providing liquidity to Aave lending pool", async () => {
-    let contractAddress: any;
-    before(async () => {
-      contractAddress = instance.address;
-    });
-
     it("should deposit into Aave and receive aWETH", async () => {
       const balanceBefore = await aaveConnector.getaWETHBalance(
         contractAddress
@@ -49,6 +49,18 @@ describe("Kamao", function () {
       const balanceAfter = await aaveConnector.getaWETHBalance(contractAddress);
       expect(balanceAfter.gt(BigNumber.from(0)));
       expect(balanceAfter.gt(balanceBefore));
+    });
+  });
+
+  describe("Removing liquidity from Aave", () => {
+    it("should get back the depositied ETH from Aave", async () => {
+      const balanceBefore = await aaveConnector.getaWETHBalance(
+        contractAddress
+      );
+
+      await instance.connect(user).withdrawLiquidity(ONE_ETH);
+      const balanceAfter = await aaveConnector.getaWETHBalance(contractAddress);
+      expect(balanceAfter.lt(balanceBefore));
     });
   });
 });

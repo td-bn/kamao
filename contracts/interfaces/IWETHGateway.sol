@@ -1,3 +1,5 @@
+//SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 interface IWETHGateway {
@@ -10,20 +12,6 @@ interface IWETHGateway {
   function withdrawETH(
     address lendingPool,
     uint256 amount,
-    address onBehalfOf
-  ) external;
-
-  function repayETH(
-    address lendingPool,
-    uint256 amount,
-    uint256 rateMode,
-    address onBehalfOf
-  ) external payable;
-
-  function borrowETH(
-    address lendingPool,
-    uint256 amount,
-    uint256 interesRateMode,
-    uint16 referralCode
+    address to
   ) external;
 }
