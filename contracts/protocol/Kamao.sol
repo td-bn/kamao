@@ -2,12 +2,13 @@
 
 pragma solidity ^0.8.0;
 
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IAaveConnector.sol";
 import "../interfaces/IWETHGateway.sol";
 import "hardhat/console.sol";
 
-contract Kamao {
+contract Kamao is Ownable{
     address public aaveInterfaceAddress;
     address public wethGatewayAddress;
     address public aWETHAddress;
@@ -15,6 +16,7 @@ contract Kamao {
     mapping(address => uint256) balances;
 
     event Deposit(address indexed _user, uint256 _amount);
+    event Withdrawal(address indexed _user, uint256 _amount);
 
     constructor(address _aaveConnector, address _wethGatewayAddress, address _aWETHToken) {
         aaveInterfaceAddress = _aaveConnector;
@@ -29,17 +31,26 @@ contract Kamao {
         emit Deposit(msg.sender, msg.value);
     }
 
-    // Change to getBalance(address _account)
+    function withdraw(uint256 _amount) external {
+        require(balances[msg.sender] >= _amount, "amount requested greater than balance");
+
+        _withdrawFromAavePool(_amount);
+        _safeTransferETH(msg.sender, _amount);
+
+        emit Withdrawal(msg.sender, _amount);
+    }
+
+    // TODO Change to getBalance(address _account)
     function getBalance() external view returns(uint256) {
         return balances[msg.sender];
     }
 
-    function provideLiquidity() external {
+    function provideLiquidity() external onlyOwner {
         _depositIntoAavePool();
     }
 
-    // TODO: Allow user to remove capital
-    function withdrawLiquidity(uint256 _amount) external {
+    // TODO Allow user to remove capital
+    function withdrawLiquidity(uint256 _amount) external onlyOwner {
         _withdrawFromAavePool(_amount);
     }
 
@@ -64,6 +75,15 @@ contract Kamao {
 
         IWETHGateway wethGateway = IWETHGateway(wethGatewayAddress);
         wethGateway.withdrawETH(lendingPool, _amount, address(this));
+    }
+
+    /* @dev transfer ETH to an address, revert if it fails.
+    *  @param to recipient of the transfer
+    *  @param value the amount to send
+    */
+    function _safeTransferETH(address to, uint256 value) internal {
+        (bool success, ) = to.call{value: value}(new bytes(0));
+        require(success, 'ETH_TRANSFER_FAILED');
     }
     
     receive() external payable {}
