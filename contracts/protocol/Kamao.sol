@@ -1,4 +1,5 @@
 //SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -8,15 +9,17 @@ import "hardhat/console.sol";
 
 contract Kamao {
     address public aaveInterfaceAddress;
-    address public wethGatewayAddress = 0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04;
-    address public aWETHAddress = 0x030bA81f1c18d280636F32af80b9AAd02Cf0854e;
+    address public wethGatewayAddress;
+    address public aWETHAddress;
 
     mapping(address => uint256) balances;
 
     event Deposit(address indexed _user, uint256 _amount);
 
-    constructor(address _aaveConnector) {
+    constructor(address _aaveConnector, address _wethGatewayAddress, address _aWETHToken) {
         aaveInterfaceAddress = _aaveConnector;
+        wethGatewayAddress = _wethGatewayAddress;
+        aWETHAddress = _aWETHToken;
     }
 
     function deposit() external payable {
@@ -26,6 +29,7 @@ contract Kamao {
         emit Deposit(msg.sender, msg.value);
     }
 
+    // Change to getBalance(address _account)
     function getBalance() external view returns(uint256) {
         return balances[msg.sender];
     }
@@ -34,6 +38,7 @@ contract Kamao {
         _depositIntoAavePool();
     }
 
+    // TODO: Allow user to remove capital
     function withdrawLiquidity(uint256 _amount) external {
         _withdrawFromAavePool(_amount);
     }

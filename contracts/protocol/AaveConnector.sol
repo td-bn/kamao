@@ -6,20 +6,23 @@ import "../interfaces/IAaveConnector.sol";
 import "../interfaces//ILendingPoolAddressesProvider.sol";
 
 contract AaveConnector is IAaveConnector {
-    address public lendingPoolProvider = 0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5;
-    address public wethGateway = 0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04;
-    address public aWETH = 0x030bA81f1c18d280636F32af80b9AAd02Cf0854e;
+    address public lendingPoolProvider;
+    address public wethGateway;
+    address public aWETH;
     address public aaveLendingPool;
 
-    constructor() {
-        ILendingPoolAddressesProvider provider = ILendingPoolAddressesProvider(lendingPoolProvider);
+    constructor(address _lendingPoolProvider, address _wethGateway, address _aWETHToken) {
+        ILendingPoolAddressesProvider provider = ILendingPoolAddressesProvider(_lendingPoolProvider);
         aaveLendingPool = provider.getLendingPool();
+        wethGateway = _wethGateway;
+        aWETH = _aWETHToken;
     }
 
     function getAaveLendingPool() external view override returns (address) {
         return aaveLendingPool;
     }
 
+    // TODO: use IWETHGateway, instead of call
     function depositETH(address _onBehalfOf) external payable override returns (bool) {
         bytes memory callData = abi.encodeWithSignature(
             "depositETH(address,address,uint16)",

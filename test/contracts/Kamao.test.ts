@@ -1,11 +1,8 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Signer, BigNumber } from "ethers";
-// import { legos } from "@studydefi/money-legos";
-
-const ONE_ETH = ethers.constants.WeiPerEther;
-// // const wETHGatewayAddress = "0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04";
-// const aWETHAddress = "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e";
+import { getAaveConnectorInstance, getKamaoInstance } from "../utils/instances";
+import { ONE_ETH } from "../utils/ethers";
 
 describe("Kamao", function () {
   let instance: any;
@@ -14,12 +11,8 @@ describe("Kamao", function () {
   let contractAddress: any;
 
   before(async () => {
-    const Kamao = await ethers.getContractFactory("Kamao");
-    const AaveConnector = await ethers.getContractFactory("AaveConnector");
-    aaveConnector = await AaveConnector.deploy();
-    instance = await Kamao.deploy(aaveConnector.address);
-    await instance.deployed();
-
+    aaveConnector = await getAaveConnectorInstance();
+    instance = await getKamaoInstance(aaveConnector);
     [user] = await ethers.getSigners();
     contractAddress = instance.address;
   });

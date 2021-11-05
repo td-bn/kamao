@@ -21,4 +21,10 @@ module.exports = {
       { ignores: ["modules"] },
     ],
   },
+  settings: {
+    node: {
+      resolvePaths: [__dirname],
+      tryExtensions: [".js", ".ts", ".json", ".node"],
+    },
+  },
 };
