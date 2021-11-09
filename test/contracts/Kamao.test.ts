@@ -40,7 +40,6 @@ describe("Kamao", function () {
   describe("User withdrawal", () => {
     it("should allow user to withdraw their funds", async () => {
       await instance.connect(user).deposit({ value: ONE_ETH });
-      await instance.connect(owner).provideLiquidity();
 
       await expect(instance.connect(user).withdraw(ONE_ETH))
         .to.emit(instance, "Withdrawal")
@@ -50,26 +49,14 @@ describe("Kamao", function () {
 
   describe("Providing liquidity to Aave lending pool", async () => {
     it("should deposit into Aave and receive aWETH", async () => {
-      await instance.connect(user).deposit({ value: ONE_ETH });
       const balanceBefore = await aaveConnector.getaWETHBalance(
         contractAddress
       );
-      await instance.connect(owner).provideLiquidity();
+      await instance.connect(user).deposit({ value: ONE_ETH });
+
       const balanceAfter = await aaveConnector.getaWETHBalance(contractAddress);
       expect(balanceAfter.gt(BigNumber.from(0)));
       expect(balanceAfter.gt(balanceBefore));
-    });
-  });
-
-  describe("Removing liquidity from Aave", () => {
-    it("should get back the depositied ETH from Aave", async () => {
-      const balanceBefore = await aaveConnector.getaWETHBalance(
-        contractAddress
-      );
-
-      await instance.connect(owner).withdrawLiquidity(ONE_ETH);
-      const balanceAfter = await aaveConnector.getaWETHBalance(contractAddress);
-      expect(balanceAfter.lt(balanceBefore));
     });
   });
 });

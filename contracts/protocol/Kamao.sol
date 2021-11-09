@@ -3,12 +3,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IAaveConnector.sol";
 import "../interfaces/IWETHGateway.sol";
 import "hardhat/console.sol";
 
-contract Kamao is Ownable{
+contract Kamao is Ownable, ReentrancyGuard{
     address public aaveInterfaceAddress;
     address public wethGatewayAddress;
     address public aWETHAddress;
@@ -28,12 +29,15 @@ contract Kamao is Ownable{
         require(msg.value > 0, "No amount transferred");
 
         balances[msg.sender] = msg.value;
+        _depositIntoAavePool(msg.value);
         emit Deposit(msg.sender, msg.value);
     }
 
-    function withdraw(uint256 _amount) external {
+    
+    function withdraw(uint256 _amount) nonReentrant external {
         require(balances[msg.sender] >= _amount, "amount requested greater than balance");
 
+        balances[msg.sender] -= _amount;
         _withdrawFromAavePool(_amount);
         _safeTransferETH(msg.sender, _amount);
 
@@ -45,23 +49,13 @@ contract Kamao is Ownable{
         return balances[msg.sender];
     }
 
-    function provideLiquidity() external onlyOwner {
-        _depositIntoAavePool();
-    }
+    // function provideLiquidity() external onlyOwner {
+    //     _depositIntoAavePool(address(this).balance);
+    // }
 
-    // TODO Allow user to remove capital
-    function withdrawLiquidity(uint256 _amount) external onlyOwner {
-        _withdrawFromAavePool(_amount);
-    }
-
-    function _depositIntoAavePool() internal {
+    function _depositIntoAavePool(uint256 _amount) internal {
         IAaveConnector aaveConnector = IAaveConnector(aaveInterfaceAddress);
-        uint256 ethBalance = address(this).balance;
-        aaveConnector.depositETH{value: address(this).balance}(address(this));
-        require(
-            aaveConnector.getaWETHBalance(address(this)) >= ethBalance,
-            "aWETH balance less than ETH balance"
-        );
+        aaveConnector.depositETH{value: _amount}(address(this));
     }
 
     function _withdrawFromAavePool(uint256 _amount) internal {
