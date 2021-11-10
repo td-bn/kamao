@@ -27,3 +27,10 @@ export const getKamaoInstance = async (aaveConnectorInstance: {
   await instance.deployed();
   return instance;
 };
+
+export const getVaultInstance = async () => {
+  const Vault = await ethers.getContractFactory("Vault");
+  const instance = await Vault.deploy();
+  await instance.deployed();
+  return instance;
+}

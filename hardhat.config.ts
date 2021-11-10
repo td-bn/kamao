@@ -8,7 +8,6 @@ import "@typechain/hardhat";
 import "hardhat-gas-reporter";
 import "solidity-coverage";
 
-
 dotenv.config();
 
 // You need to export an object to set up your config
@@ -41,7 +40,7 @@ const config: HardhatUserConfig = {
   },
   paths: {
     artifacts: "web/src/artifacts",
-  }
+  },
 };
 
 export default config;
