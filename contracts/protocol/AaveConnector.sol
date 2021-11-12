@@ -36,7 +36,6 @@ contract AaveConnector is IAaveConnector {
     }
 
     function getaWETHBalance(address _user) external view override returns (uint256) {
-        IERC20 aWETHContract = IERC20(aWETH);
-        return aWETHContract.balanceOf(_user);
+        return IERC20(aWETH).balanceOf(_user);
     }
 }
