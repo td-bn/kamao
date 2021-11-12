@@ -22,7 +22,7 @@ contract Vault is ERC20 {
         return address(this).balance;
     }
 
-    function deposit(uint256 _amount) public payable {
+    function deposit(uint256 _amount) external payable {
         uint256 _pool = balance();
         _amount = msg.value;
 
@@ -35,7 +35,7 @@ contract Vault is ERC20 {
         _mint(msg.sender, shares);
     }
 
-    function withdraw(uint256 _shares) public {
+    function withdraw(uint256 _shares) external {
         uint256 _pool = balance();
         uint256 due = _pool.mul(_shares).div(totalSupply());
 
@@ -44,6 +44,10 @@ contract Vault is ERC20 {
         // TODO Check balance and request from pool if its lower than due
         
         _safeTransferETH(msg.sender, due);
+    }
+
+    function getPricePerFullShare() external view returns (uint256) {
+        return balance().mul(1e18).div(totalSupply());
     }
 
     function _safeTransferETH(address to, uint256 value) internal {
