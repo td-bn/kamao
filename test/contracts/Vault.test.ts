@@ -1,4 +1,4 @@
-import { getVaultInstance } from "../utils/instances";
+import { getVaultInstance, getControllerInstance } from "../utils/instances";
 import { expect } from "chai";
 import { ADDRESS_ZERO, ONE_ETH } from "../utils/ethers";
 import { Signer } from "ethers";
@@ -9,7 +9,8 @@ describe("Vault", () => {
   let user: Signer;
 
   before(async () => {
-    instance = await getVaultInstance();
+    const controllerInstance = await getControllerInstance();
+    instance = await getVaultInstance(controllerInstance);
     [, user] = await ethers.getSigners();
   });
 

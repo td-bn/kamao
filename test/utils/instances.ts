@@ -28,9 +28,31 @@ export const getKamaoInstance = async (aaveConnectorInstance: {
   return instance;
 };
 
-export const getVaultInstance = async () => {
+export const getVaultInstance = async (controller: { address: any }) => {
   const Vault = await ethers.getContractFactory("Vault");
-  const instance = await Vault.deploy();
+  const instance = await Vault.deploy(controller.address);
   await instance.deployed();
   return instance;
-}
+};
+
+export const getControllerInstance = async () => {
+  const Controller = await ethers.getContractFactory("Controller");
+  const instance = await Controller.deploy();
+  await instance.deployed();
+  return instance;
+};
+
+export const getETHStrategyInstance = async (
+  controller: { address: any },
+  aaveConnector: { address: any }
+) => {
+  const ETHStrategy = await ethers.getContractFactory("ETHStrategy");
+  const instance = await ETHStrategy.deploy(
+    controller.address,
+    aaveConnector.address,
+    aWETHTokenAddress,
+    WETHGatewayAddress
+  );
+  await instance.deployed();
+  return instance;
+};

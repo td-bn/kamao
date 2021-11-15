@@ -11,7 +11,6 @@ import "../../interfaces/IAaveConnector.sol";
 import "../../interfaces/IVault.sol";
 
 contract ETHStrategy {
-    using Address for address;
     using SafeMath for uint256;
 
     address public governance;
@@ -70,4 +69,6 @@ contract ETHStrategy {
         (bool success, ) = to.call{value: value}(new bytes(0));
         require(success, 'ETH_TRANSFER_FAILED');
     }
+
+    receive() external payable {}
 }

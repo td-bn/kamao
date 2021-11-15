@@ -3,20 +3,22 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
-contract Vault is ERC20 {
-    using SafeERC20 for IERC20;
-    using Address for address;
-    using SafeMath for uint256;
+import "../interfaces/IController.sol";
 
-    constructor()
+contract Vault is ERC20 {
+    using SafeMath for uint256;
+    address public controller;
+
+    constructor(address _controller)
         ERC20("kamao ETH", "kETH")
-    { }
+    { 
+        controller = _controller;
+    }
 
     function balance() public view returns (uint256) {
         return address(this).balance;
@@ -33,6 +35,12 @@ contract Vault is ERC20 {
             shares = _amount.mul(totalSupply()).div(_pool);
         }
         _mint(msg.sender, shares);
+    }
+
+    function earn() external {
+        uint256 _balance = balance();
+        _safeTransferETH(controller, _balance);
+        IController(controller).earn(_balance);
     }
 
     function withdraw(uint256 _shares) external {
@@ -54,4 +62,6 @@ contract Vault is ERC20 {
         (bool success, ) = to.call{value: value}(new bytes(0));
         require(success, 'ETH_TRANSFER_FAILED');
     }
+
+    receive() external payable {}
 }
