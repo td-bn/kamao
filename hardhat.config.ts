@@ -6,6 +6,7 @@ import "@nomiclabs/hardhat-waffle";
 import "@nomiclabs/hardhat-ethers";
 import "@typechain/hardhat";
 import "hardhat-gas-reporter";
+import "hardhat-deploy";
 import "solidity-coverage";
 
 dotenv.config();
@@ -23,6 +24,10 @@ const config: HardhatUserConfig = {
         version: "0.6.12",
       },
     ],
+  },
+  namedAccounts: {
+    deployer: 0,
+    tokenOwner: 1,
   },
   networks: {
     ropsten: {

@@ -2,7 +2,7 @@ import React from 'react';
 import { Web3ReactProvider } from '@web3-react/core';
 import './App.css';
 import { ethers } from 'ethers';
-import Main from './components/Main';
+import Container from './components/Container';
 
 declare global {
     interface Window {
@@ -17,7 +17,7 @@ const getLibrary = (provider: any, connector: any) => {
 function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <Main />
+      <Container />
     </Web3ReactProvider>
   );
 }
