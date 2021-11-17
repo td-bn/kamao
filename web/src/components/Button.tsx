@@ -1,4 +1,5 @@
 import { InjectedConnector } from '@web3-react/injected-connector'
+import { Button as Btn } from '@chakra-ui/button'
 import React from 'react'
 
 interface ButtonProps {
@@ -9,11 +10,10 @@ interface ButtonProps {
 
 function Button( {message, action, connector}: ButtonProps) {
   return (
-    <button 
-      className="waves-effect waves-light btn" 
+    <Btn colorScheme="teal" 
       onClick={() => {action(connector)}}>
         {message}
-    </button>
+    </Btn>
   )
 }
 
