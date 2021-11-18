@@ -5,10 +5,13 @@ import { Spacer, Flex, Box, Text } from "@chakra-ui/react"
 import Button from './Button';
 import EthBalance from './ETHBalance';
 import KEthBalance from './KETHBalance';
+import useEagerConnect from '../hooks/useEagerConnect';
 
 function Nav(): ReactElement {
   const {active, account, activate, deactivate} = useWeb3React();
   const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42, 1337] });
+
+  useEagerConnect();
 
   return (
     <Flex className="">

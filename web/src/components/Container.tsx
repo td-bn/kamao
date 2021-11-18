@@ -6,7 +6,7 @@ import Nav from './Nav';
 function Page() {
 
   return (
-    <SimpleGrid bg="teal.100" m={20} mt={10} columns={1} spacing={20}> 
+    <SimpleGrid bg="teal.100" p="24" pt="4" m={20} mt={10} columns={1} spacing={20}> 
       <Nav />
       <Main />
     </SimpleGrid>
