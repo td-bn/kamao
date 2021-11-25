@@ -4,6 +4,7 @@ import { ChakraProvider } from '@chakra-ui/provider';
 import './App.css';
 import { ethers } from 'ethers';
 import Container from './components/Container';
+import theme from '@chakra-ui/theme';
 
 declare global {
     interface Window {
@@ -18,7 +19,9 @@ const getLibrary = (provider: any, connector: any) => {
 function App() {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <Container />
+      <ChakraProvider theme={theme}>
+        <Container />
+      </ChakraProvider>
     </Web3ReactProvider>
   );
 }
