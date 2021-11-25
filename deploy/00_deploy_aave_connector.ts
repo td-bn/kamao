@@ -1,9 +1,9 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
 
-const lendingPoolProviderAddress = "0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5";
-const WETHGatewayAddress = "0xcc9a0B7c43DC2a5F023Bb9b738E45B0Ef6B06E04";
-const aWETHTokenAddress = "0x030bA81f1c18d280636F32af80b9AAd02Cf0854e";
+const lendingPoolProviderAddress = "0x88757f2f99175387aB4C6a4b3067c77A695b0349";
+const WETHGatewayAddress = "0xA61ca04DF33B72b235a8A28CfB535bb7A5271B70";
+const aWETHTokenAddress = "0x87b1f4cf9BD63f7BBD3eE1aD04E8F52540349347";
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   const { deployments, getNamedAccounts } = hre;

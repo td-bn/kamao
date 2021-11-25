@@ -2,7 +2,11 @@ import { Button, Center, Heading, HStack, NumberDecrementStepper, NumberIncremen
 import React from 'react'
 import { useWeb3React } from '@web3-react/core';
 import { getContract } from '../utils/utils';
-import { parseEther } from '@ethersproject/units';
+import { BigNumber, ethers } from 'ethers';
+
+export const ONE_ETH = ethers.constants.WeiPerEther;
+export const ADDRESS_ZERO = ethers.constants.AddressZero;
+export const parseEther = ethers.utils.parseEther;
 
 const Deposit = () => {
   const format = (val: any) => `Ξ ` + val
@@ -17,7 +21,8 @@ const Deposit = () => {
     try {
       const signer = library.getSigner();
       const numValue = parseFloat(value);
-      const tx = await vault.connect(signer).deposit(numValue, {value: parseEther(value)});
+      const amount = parseEther(numValue.toString());
+      const tx = await vault.connect(signer).deposit(amount, {value: amount});
       await tx.wait();
     } catch (err) {
       console.log("Error: ", err);
