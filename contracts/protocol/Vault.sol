@@ -49,7 +49,9 @@ contract Vault is ERC20 {
 
         _burn(msg.sender, _shares);
 
-        // TODO Check balance and request from pool if its lower than due
+        if (balance() < due) {
+            IController(controller).withdraw(due);
+        }
         
         _safeTransferETH(msg.sender, due);
     }

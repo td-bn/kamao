@@ -17,11 +17,9 @@ const getLibrary = (provider: any, connector: any) => {
 
 function App() {
   return (
-    <ChakraProvider>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Container />
-      </Web3ReactProvider>
-    </ChakraProvider>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Container />
+    </Web3ReactProvider>
   );
 }
 
