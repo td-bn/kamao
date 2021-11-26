@@ -3,13 +3,15 @@ import {
   getControllerInstance,
   getAaveConnectorInstance,
   getETHStrategyInstance,
+  getMockWethGateway,
+  getMockLengingPoolProviderInstance,
 } from "../utils/instances";
 import { expect } from "chai";
 import { ONE_ETH } from "../utils/ethers";
 import { Signer } from "ethers";
 import { ethers } from "hardhat";
 
-describe("Controller", () => {
+describe("Kamao", () => {
   let controllerInstance: any;
   let vaultInstance: any;
   let strategyInstance: any;
@@ -19,12 +21,19 @@ describe("Controller", () => {
   let user: Signer;
 
   before(async () => {
+    const mockPoolProvider = await getMockLengingPoolProviderInstance();
+    const mockWethGateway = await getMockWethGateway();
+    aaveConnector = await getAaveConnectorInstance(
+      mockPoolProvider.address,
+      mockWethGateway.address
+    );
+
     controllerInstance = await getControllerInstance();
     vaultInstance = await getVaultInstance(controllerInstance);
-    aaveConnector = await getAaveConnectorInstance();
     strategyInstance = await getETHStrategyInstance(
       controllerInstance,
-      aaveConnector
+      aaveConnector,
+      mockWethGateway
     );
     [governance, user] = await ethers.getSigners();
   });

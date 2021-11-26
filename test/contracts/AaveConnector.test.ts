@@ -1,7 +1,7 @@
 import { expect } from "chai";
 import { ethers } from "hardhat";
 import { Signer } from "ethers";
-import { getAaveConnectorInstance } from "../utils/instances";
+import { getAaveConnectorInstance, getMockLengingPoolProviderInstance, getMockWethGateway } from '../utils/instances';
 import { ADDRESS_ZERO, parseEther } from "../utils/ethers";
 
 describe("AaveConnector", function () {
@@ -9,7 +9,12 @@ describe("AaveConnector", function () {
   let user: Signer;
 
   before(async () => {
-    instance = await getAaveConnectorInstance();
+    const mockPoolProvider = await getMockLengingPoolProviderInstance();
+    const mockWethGateway = await getMockWethGateway();
+    instance = await getAaveConnectorInstance(
+      mockPoolProvider.address,
+      mockWethGateway.address
+    );
     [user] = await ethers.getSigners();
   });
 
