@@ -46,7 +46,8 @@ The protocol has three main components:
 2. Controller: governance controlled controller of a vault
 3. Strategy: a strategy for earning yield for a vault controlled through controller
 
-![diagram](https://user-images.githubusercontent.com/84708985/143611581-6016c9d7-a83f-4f888d-10ca2643bf62.jpg)
+![image](https://user-images.githubusercontent.com/84708985/143611940-b2987f9a-dc8d-4bc2-ab83-2b3131301b3b.png)
+
 
 As of this time, the project has: an ETH vault, a controller and a strategy for earning yield from Aave.
 
