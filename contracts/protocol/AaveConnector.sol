@@ -5,12 +5,17 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "../interfaces/IAaveConnector.sol";
 import "../interfaces//ILendingPoolAddressesProvider.sol";
 
+/**
+    @notice A simple bridge to deposit in the Aave WETH lending pool
+    @dev Uses Aave WETH gateway to make life easier
+ */
 contract AaveConnector is IAaveConnector {
     address public lendingPoolProvider;
     address public wethGateway;
     address public aWETH;
     address public aaveLendingPool;
 
+    /// @notice Initialized with contract addresses required
     constructor(address _lendingPoolProvider, address _wethGateway, address _aWETHToken) {
         ILendingPoolAddressesProvider provider = ILendingPoolAddressesProvider(_lendingPoolProvider);
         aaveLendingPool = provider.getLendingPool();
@@ -18,6 +23,7 @@ contract AaveConnector is IAaveConnector {
         aWETH = _aWETHToken;
     }
 
+    /// @notice Returns the aave lending pool that we are depositing the funds into
     function getAaveLendingPool() external view override returns (address) {
         return aaveLendingPool;
     }
@@ -35,6 +41,8 @@ contract AaveConnector is IAaveConnector {
         return success;
     }
 
+    
+    /// @notice Returns the aave token balance
     function getaWETHBalance(address _user) external view override returns (uint256) {
         return IERC20(aWETH).balanceOf(_user);
     }

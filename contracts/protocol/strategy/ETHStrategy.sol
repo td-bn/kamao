@@ -10,6 +10,10 @@ import "../../interfaces/IWETHGateway.sol";
 import "../../interfaces/IAaveConnector.sol";
 import "../../interfaces/IVault.sol";
 
+/**
+    @notice A simple strategy for earning yield on ETH
+    @dev Deposits ETH into the Aave's WETH pool
+ */
 contract ETHStrategy {
     using SafeMath for uint256;
 
@@ -29,6 +33,7 @@ contract ETHStrategy {
         wethGatewayAddress = _wethGatewayAddress;
     }
 
+    /// @notice Deposit funcs into a strategy
     function deposit() external {
         uint256 _balance =  address(this).balance;
         if (_balance > 0 ) {
@@ -36,12 +41,14 @@ contract ETHStrategy {
         }
     }
 
+    /// @notice Withdraw funds from a strategy
     function withdraw(uint256 _amount) external {
         require(msg.sender == controller, "!controller");
         _withdrawFromAavePool(_amount);
         _safeTransferETH(vault, _amount);
     }
 
+    /// @notice Withdraw all funds from a strategy
     function withdrawAll() external {
         require(msg.sender == controller, "!controller");
         uint256 _balance = IERC20(aWETH).balanceOf(address(this));
@@ -67,7 +74,7 @@ contract ETHStrategy {
 
     function _safeTransferETH(address to, uint256 value) internal {
         (bool success, ) = to.call{value: value}(new bytes(0));
-        require(success, 'ETH_TRANSFER_FAILED');
+        require(success, "ETH_TRANSFER_FAILED");
     }
 
     receive() external payable {}
